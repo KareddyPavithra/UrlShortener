@@ -15,7 +15,12 @@ const shortUrlSchema = new mongoose.Schema({
         type: Number,
         required: true,
         default: 0
-    }
-})
+    },
+    userId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+});
 
-module.exports = mongoose.model('ShortUrl', shortUrlSchema)
+
+module.exports = mongoose.model('ShortUrl', shortUrlSchema);
