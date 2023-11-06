@@ -4,7 +4,7 @@ const userSchema = new mongoose.Schema({
     username:{
         type: String,
         required: true,
-        unique: true
+        unique:true
     },
     password:{
         type: String,
@@ -12,6 +12,9 @@ const userSchema = new mongoose.Schema({
     },
     preferredShortUrl:{
         type: String
+    },
+    nameTier:{
+        type: String,
     },
     tier:{
         type: mongoose.Schema.Types.ObjectId,

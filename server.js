@@ -4,6 +4,7 @@ const session = require('express-session')
 const ShortUrl = require('./models/shortUrl')
 const User = require('./models/user')
 const Tier = require('./models/tier')
+const tier = require('./models/tier')
 
 const app = express()
 
@@ -51,9 +52,13 @@ app.get('/shorten', async (req, res) => {
 })
 
 app.post('/register', async (req, res) => {
-    const { username, password, tier } = req.body;
+    const { username, password, nameTier } = req.body;
 
-    const tierD = await Tier.findOne({ name: tier });
+    console.log(nameTier);
+
+    const tierD = await Tier.findOne({ nameTier: nameTier });
+
+    console.log(tierD);
 
     if(!tierD){
         return res.status(400).send('Invalid tier');
@@ -62,15 +67,19 @@ app.post('/register', async (req, res) => {
     const user = new User({
         username, 
         password,
+        nameTier: nameTier,
         tier: tierD._id
     });
+
+    console.log(user);
 
     try{
         await user.save();
         req.session.user = user;
 
-        res.redirect('/shorten');
+        res.redirect('/login');
     } catch(err){
+        console.log(err);
         return res.status(500).send('Internal Server Error');
     }
 });
@@ -91,19 +100,28 @@ app.post('/login', async (req, res) => {
 
         req.session.user = user;
 
-        res.redirect('/');
+        console.log(req.session.user);
+
+        res.redirect('/shorten');
     } catch(err){
         return res.status(500).send('Internal Server Error');
     }
 });
 
-app.post('/shortUrls', async (req, res) => {
-    const user = req.user;
+app.post('/shorten', async (req, res) => {
+    const user = req.session.user;
+
+    console.log(user);
+
     if(!user){
         return res.status(401).send('Unauthorized');
     }
 
-    const userTier = await Tier.findById(user.tier);
+    const userTier = await Tier.findOne({nameTier: user.nameTier});
+
+    console.log(userTier);
+    //console.log(userTier.requestsMade);
+    //console.log(userTier.maxRequests);
 
     if(userTier && userTier.requestsMade < userTier.maxRequests){
         const preferredShortUrl = req.body.preferredShortUrl;
@@ -117,8 +135,13 @@ app.post('/shortUrls', async (req, res) => {
 
         const shortUrl = await ShortUrl.create({ full: fullUrl, short: preferredShortUrl });
 
-        user.preferredShortUrl = preferredShortUrl;
-        await user.save();
+        console.log(user);
+        console.log(typeof user);
+        console.log(user.constructor.name);
+        console.log(user.constructor === User);
+
+       /// user.preferredShortUrl = preferredShortUrl;
+       // await user.save();
 
         userTier.requestsMade++;
         await userTier.save();

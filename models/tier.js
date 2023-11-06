@@ -1,7 +1,7 @@
 const mongoose = require('mongoose')
 
 const tierSchema = new mongoose.Schema({
-    name:{
+    nameTier:{
         type: String,
         required: true,
     },
