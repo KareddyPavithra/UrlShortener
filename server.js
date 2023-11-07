@@ -3,8 +3,6 @@ const mongoose = require('mongoose')
 const session = require('express-session')
 const ShortUrl = require('./models/shortUrl')
 const User = require('./models/user')
-const Tier = require('./models/tier')
-const tier = require('./models/tier')
 
 const app = express()
 
@@ -51,29 +49,31 @@ app.get('/shorten', async (req, res) => {
     res.render('shorten');
 })
 
+app.get('/history', async (req, res) => {
+    console.log("Inside history");
+    const loggedInUser = req.session.user;
+    const user = await User.findOne({username: loggedInUser.username});
+    console.log(user);
+
+    if(!user) return res.sendStatus(404);
+
+    const shortUrls = await ShortUrl.find({ userId: user._id });
+    console.log(shortUrls);
+    res.render('index', { user, shortUrls});
+});
+
+
+
 app.post('/register', async (req, res) => {
     const { username, password, nameTier } = req.body;
-
-    console.log(nameTier);
-
-    const tier = await Tier.findOne({ nameTier: nameTier });
-
-    console.log(tier);
-
-    if(!tier){
-        return res.status(400).send('Invalid tier');
-    }
 
     const user = new User({
         username, 
         password,
         nameTier: nameTier,
-        tierId: tier._id
+        maxRequests: (nameTier === "tier1")? 1000: 100,
+        requestsMade: 0 
     });
-
-    console.log(user);
-    console.log(typeof user);
-    console.log(user.constructor === User);
 
     try{
         await user.save();
@@ -102,9 +102,7 @@ app.post('/login', async (req, res) => {
 
         req.session.user = user;
 
-        console.log(req.session.user);
-
-        res.redirect('/shorten');
+        res.redirect('/history');
     } catch(err){
         return res.status(500).send('Internal Server Error');
     }
@@ -113,19 +111,11 @@ app.post('/login', async (req, res) => {
 app.post('/shorten', async (req, res) => {
     const user = req.session.user;
 
-    console.log(user);
-
     if(!user){
         return res.status(401).send('Unauthorized');
     }
 
-    const userTier = await Tier.findOne({nameTier: user.nameTier});
-
-    console.log(userTier);
-    //console.log(userTier.requestsMade);
-    //console.log(userTier.maxRequests);
-
-    if(userTier && userTier.requestsMade < userTier.maxRequests){
+    if(user && user.requestsMade < user.maxRequests){
         const preferredShortUrl = req.body.preferredShortUrl;
         const fullUrl = req.body.fullUrl;
 
@@ -134,22 +124,13 @@ app.post('/shorten', async (req, res) => {
         if(existingShortUrl){
             return res.status(400).send('Short URL already in use');
         }
+        const userFromDB = await User.findOne({ username: user.username });
+        const shortUrl = await ShortUrl.create({ full: fullUrl, short: preferredShortUrl, userId: userFromDB._id });
 
-        const shortUrl = await ShortUrl.create({ full: fullUrl, short: preferredShortUrl });
-
-        console.log(user);
-        console.log(typeof user);
-        console.log(user.constructor.name);
-        console.log(user.constructor === User);
-
-       /// user.preferredShortUrl = preferredShortUrl;
-       user
-       // await user.save();
-
-        userTier.requestsMade++;
-        await userTier.save();
-
-        return res.redirect('/');
+        user.requestsMade++;
+        userFromDB.requestsMade++;
+        await userFromDB.save();
+        res.redirect('/history');
     } else{
         return res.status(403).send('Request limit exceeded for the current tier');
     }
@@ -165,12 +146,6 @@ app.get('/:shortUrl', async (req, res) => {
     res.redirect(shortUrl.full)
 });
 
-app.get('/user/:userId/history', async (req, res) => {
-    const user = await User.findById(req.params.userId).populate('tier');
-    if(!user) return res.sendStatus(404);
 
-    const shortUrls = await ShortUrl.find({ userId: user._id });
-    res.send('userHistory', { user, shortUrls});
-});
 
 app.listen(process.env.PORT || 5000);

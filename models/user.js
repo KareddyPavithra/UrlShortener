@@ -10,18 +10,17 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    preferredShortUrl:{
-        type: String
-    },
     nameTier:{
         type: String,
         required: true
     },
-    
-    tierId:{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Tier",
-       // required: true
+    maxRequests:{
+        type: Number,
+        required: true,
+    },
+    requestsMade:{
+        type: Number,
+        default: 0,
     },
 });
 
