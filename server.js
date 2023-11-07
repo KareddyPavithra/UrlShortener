@@ -56,11 +56,11 @@ app.post('/register', async (req, res) => {
 
     console.log(nameTier);
 
-    const tierD = await Tier.findOne({ nameTier: nameTier });
+    const tier = await Tier.findOne({ nameTier: nameTier });
 
-    console.log(tierD);
+    console.log(tier);
 
-    if(!tierD){
+    if(!tier){
         return res.status(400).send('Invalid tier');
     }
 
@@ -68,10 +68,12 @@ app.post('/register', async (req, res) => {
         username, 
         password,
         nameTier: nameTier,
-        tier: tierD._id
+        tierId: tier._id
     });
 
     console.log(user);
+    console.log(typeof user);
+    console.log(user.constructor === User);
 
     try{
         await user.save();
@@ -141,6 +143,7 @@ app.post('/shorten', async (req, res) => {
         console.log(user.constructor === User);
 
        /// user.preferredShortUrl = preferredShortUrl;
+       user
        // await user.save();
 
         userTier.requestsMade++;
