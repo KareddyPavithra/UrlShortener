@@ -50,22 +50,42 @@ app.get('/shorten', async (req, res) => {
 })
 
 app.get('/history', async (req, res) => {
-    console.log("Inside history");
     const loggedInUser = req.session.user;
+    if (!loggedInUser) {
+        return res.redirect("/login")
+    }
     const user = await User.findOne({username: loggedInUser.username});
-    console.log(user);
 
     if(!user) return res.sendStatus(404);
 
     const shortUrls = await ShortUrl.find({ userId: user._id });
-    console.log(shortUrls);
     res.render('index', { user, shortUrls});
+});
+
+app.post('/logout', async (req, res) => {
+    try{
+        delete req.session.user;
+        res.redirect('/login')
+    }catch(err){
+        console.log(err);
+    }
+
+
 });
 
 
 
 app.post('/register', async (req, res) => {
     const { username, password, nameTier } = req.body;
+    if(username && password && nameTier && username==="" && password==="" && nameTier===""){
+        return res.status(500).json({message:"Please fill all fields"});
+    }
+
+    const existingUser = await User.findOne({ username: username });
+
+    if(existingUser){
+        return res.status(400).send('User already in use');
+    }
 
     const user = new User({
         username, 
@@ -88,6 +108,10 @@ app.post('/register', async (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { loginUsername, loginPassword } = req.body;
+
+    if(loginUsername && loginPassword && loginUsername==="" && loginPassword===""){
+        return res.status(500).json({message:"Please fill all fields"});
+    }
 
     try{
         const user = await User.findOne({ username: loginUsername });
@@ -118,6 +142,10 @@ app.post('/shorten', async (req, res) => {
     if(user && user.requestsMade < user.maxRequests){
         const preferredShortUrl = req.body.preferredShortUrl;
         const fullUrl = req.body.fullUrl;
+
+        if(fullUrl && preferredShortUrl && fullUrl==="" && preferredShortUrl===""){
+            return res.status(500).json({message:"Please fill all fields"});
+        }
 
         const existingShortUrl = await ShortUrl.findOne({ short: preferredShortUrl });
 

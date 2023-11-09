@@ -3,21 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <title>Register</title>
 </head>
-<body>
-    <h1>Register</h1>
-    <form action="/register" method="post" class="my-4 form-inline">
-        <label for="username" class="sr-only">Username</label>
-        <input required placeholder="Username" type="text" name="username" id="username" class="col mr-2">
-        <label for="password" class="sr-only">Password</label>
-        <input required placeholder="Password" type="password" name="password" id="password" class="col mr-2">
-        <label for="nameTier" class="sr-only">Tier</label>
-        <select required name="nameTier" id="nameTier" class="col mr-2">
-            <option value="tier1">Tier 1</option>
-            <option value="tier2">Tier 2</option>
-        </select>
-        <button class="btn btn-primary" type="submit">Register</button>
-    </form>
+<body class="bg-light">
+    <div class="container">
+        <div class="row-justify-content-center mt-5">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-body">
+                        <h1 class="text-center mb-4">Register</h1>
+                            <form action="/register" method="post">
+                                <div class="form-group">
+                                    <label for="username">Username</label>
+                                    <input required placeholder="Username" type="text" name="username" id="username" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="password">Password</label>
+                                    <input required placeholder="Password" type="password" name="password" id="password" class="form-control">
+                                </div>
+                                <div class="form-group">
+                                    <label for="nameTier">Tier</label>
+                                    <select required name="nameTier" id="nameTier" class="form-control">
+                                        <option value="tier1">Tier 1</option>
+                                        <option value="tier2">Tier 2</option>
+                                    </select>
+                                </div>
+                                <button class="btn btn-primary btn-block" type="submit">Register</button>
+                            </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
