@@ -35,3 +35,7 @@ The following are some of the APIs that are incorporated in the application:
 
 Take a look at some of the screenshots of the application:
 
+![Home page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Welcome%20page.png)
+![Login page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Login%20page.png)
+![Shorten page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Shorten%20page.png)
+![History page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/History.png)
