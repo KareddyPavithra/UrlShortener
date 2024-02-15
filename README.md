@@ -19,10 +19,14 @@
 The following are some of the APIs that are incorporated in the application:
 
 * <b>GET: /register </b>
+* <b>POST: /register </b>
 * <b>GET: /login </b>
+* <b>POST: /login </b>
 * <b>POST: /logout </b>
-* <b>GET: /history </b>
 * <b>GET: /shorten </b>
+* <b>POST: /shorten </b>
+* <b>GET: /history </b>
+* <b>GET: /:shortUrl </b>
 
 ## Features and functionalities
 
