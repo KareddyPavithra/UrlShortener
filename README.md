@@ -39,7 +39,14 @@ The following are some of the APIs that are incorporated in the application:
 
 Take a look at some of the screenshots of the application:
 
+This is the home page of the application:
 ![Home page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Welcome%20page.png)
+
+This is the login page of the application:
 ![Login page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Login%20page.png)
+
+In this page, the user gives the URL of the website they want to shorten along with the preferred short URL:
 ![Shorten page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Shorten%20page.png)
+
+In this page, the user history is displayed:
 ![History page](https://github.com/KareddyPavithra/UrlShortener/blob/main/urls%20images/Historyy%20page.png)
